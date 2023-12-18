@@ -59,7 +59,7 @@ def MasiroSignIn(session):
     sign_rsp = session.get("https://masiro.me/admin/dailySignIn")
     #sign_rsp.encoding = "utf-8"
     result = sign_rsp.json()["msg"]
-    assert result.find("打卡成功") != -1 and result.find("已打卡") != -1, sign_rsp.text
+    assert result.find("打卡成功") != -1 or result.find("已打卡") != -1, sign_rsp.text
     logging.info(result)
 
 def main():
