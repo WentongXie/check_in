@@ -5,6 +5,7 @@ import logging
 import traceback
 from bs4 import BeautifulSoup
 from urllib import parse
+import cloudscraper
 
 header = {
     "User-Agent": r"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
@@ -74,7 +75,7 @@ def YamiboSign(session):
 
 def YamiboCheck(account, password):
     try:
-        with requests.Session() as s:
+        with cloudscraper.create_scraper() as s:
             uid = YamiboLogin(s, account, password)
             YamiboLogUserInfo(s, uid)
             YamiboSign(s)
