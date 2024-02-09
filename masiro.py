@@ -2,6 +2,7 @@ import logging, requests
 import traceback
 from bs4 import BeautifulSoup
 from Push import PushMessage
+import http.cookies
 
 header = {
     "User-Agent": r"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
@@ -33,6 +34,7 @@ def MasiroLogUserInfo(session):
     info = admin_bs.find("li", class_="user-header")
     logging.info(info.get_text())
 
+'''
 def MasiroCheck(account, password):
     try:
         with requests.Session() as s:
@@ -42,6 +44,23 @@ def MasiroCheck(account, password):
             MasiroSignIn(s)
             MasiroLogUserInfo(s)
             MasiroLogout(s)
+            logging.info("MasiroCheck finish.")
+    except Exception as e:
+        logging.error("Exception: %s", traceback.format_exc())
+        PushMessage("masiro check failed.", "masiro check failed.")
+'''
+
+def MasiroCheck(cookie):
+    try:
+        with requests.Session() as s:
+            s.headers.update(header)
+            cookie = http.cookies.SimpleCookie(cookie)
+            cookie_jar = requests.cookies.RequestsCookieJar()
+            cookie_jar.update(cookie)
+            s.cookies.update(cookie_jar)
+            MasiroLogUserInfo(s)
+            MasiroSignIn(s)
+            MasiroLogUserInfo(s)
             logging.info("MasiroCheck finish.")
     except Exception as e:
         logging.error("Exception: %s", traceback.format_exc())
@@ -64,7 +83,8 @@ def MasiroSignIn(session):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    MasiroCheck("account", "password")
+    #MasiroCheck("account", "password")
+    MasiroCheck("cookie")
     print("import masiro")
 
 if __name__ == "__main__":
