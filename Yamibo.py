@@ -6,9 +6,10 @@ import traceback
 from bs4 import BeautifulSoup
 from urllib import parse
 import cloudscraper
+import http.cookies
 
 header = {
-    "User-Agent": r"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
+    "User-Agent": r"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
     "Accept-Language": r"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
     "Accept": r"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
 }
@@ -61,8 +62,7 @@ def YamiboLogout(session, uid):
 
 
 def YamiboSign(session):
-    rsp = session.get(
-        "https://bbs.yamibo.com/plugin.php?id=zqlj_sign&mobile=2", headers=header)
+    rsp = session.get("https://bbs.yamibo.com/plugin.php?id=zqlj_sign&mobile=2")
     sign_bs = BeautifulSoup(rsp.text, "html.parser")
     sign_url = sign_bs.find("a", class_="btna")
     assert sign_url != None and sign_url.get("href") != None, rsp.text
@@ -73,31 +73,36 @@ def YamiboSign(session):
     logging.debug(sign_rsp.text)
 
 
-def YamiboCheck(account, password):
+def YamiboCheck(cookie):
     try:
-        with cloudscraper.create_scraper() as s:
-            uid = YamiboLogin(s, account, password)
-            YamiboLogUserInfo(s, uid)
+        with requests.Session() as s:
+            s.headers.update(header)
+            cookie = http.cookies.SimpleCookie(cookie)
+            cookie_jar = requests.cookies.RequestsCookieJar()
+            cookie_jar.update(cookie)
+            s.cookies.update(cookie_jar)
+            #uid = YamiboLogin(s, account, password)
+            YamiboLogUserInfo(s)
             YamiboSign(s)
-            YamiboLogUserInfo(s, uid)
-            YamiboLogout(s, uid)
+            YamiboLogUserInfo(s)
+            #YamiboLogout(s, uid)
             logging.info("YamiboCheck finish.")
     except Exception as e:
         logging.error("Exception: %s", traceback.format_exc())
         PushMessage("yamibo check failed.", "yamibo check failed.")
 
 
-def YamiboLogUserInfo(session, uid):
-    rsp = session.get(
-        "https://bbs.yamibo.com/home.php?mod=space&uid={}&do=profile&mycenter=1&mobile=2".format(uid), headers=header)
+def YamiboLogUserInfo(session):
+    rsp = session.get("https://bbs.yamibo.com/home.php?mod=spacecp&ac=credit&mobile=2")
     home_bs = BeautifulSoup(rsp.text, "html.parser")
-    info = home_bs.find("div", class_="user_box cl")
+    logging.debug(rsp.text)
+    info = home_bs.find("ul", class_="creditl mtm bbda cl")
     logging.info(info.get_text())
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    YamiboCheck("account", "password")
+    YamiboCheck("cookie")
     pass
 
 
