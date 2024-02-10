@@ -16,10 +16,10 @@ def main():
     LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
     logging.basicConfig(filename = "/root/website/nginx/html/files/log/" + name + ".txt",level = logging.INFO, format = LOG_FORMAT)
     SonkwoCheck("account", "password")
-    YamiboCheck("account", "password")
+    YamiboCheck("cookie")
     GamerCheck("account", "password")
     ritdon("account", "password")
-    MasiroCheck("account", "password")
+    MasiroCheck("cookie")
     pica_sign("account", "password")
     tsdm_sign("cookie")
     right_sign("cookie")
