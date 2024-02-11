@@ -93,10 +93,11 @@ def YamiboCheck(cookie):
 
 
 def YamiboLogUserInfo(session):
-    rsp = session.get("https://bbs.yamibo.com/home.php?mod=spacecp&ac=credit&mobile=2")
+    rsp = session.get("https://bbs.yamibo.com/home.php?mod=spacecp&ac=credit")
     home_bs = BeautifulSoup(rsp.text, "html.parser")
     logging.debug(rsp.text)
     info = home_bs.find("ul", class_="creditl mtm bbda cl")
+    assert info is not None, rsp.text
     logging.info(info.get_text())
 
 
