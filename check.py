@@ -8,6 +8,7 @@ from masiro import MasiroCheck
 from pica import pica_sign
 from tsdm import tsdm_sign
 from right import right_sign
+from yurifans import yurifans
 
 def main():
     time.sleep(random.randint(0, 120))
@@ -23,6 +24,7 @@ def main():
     pica_sign("account", "password")
     tsdm_sign("cookie")
     right_sign("cookie")
+    yurifans("account", "password")
     pass
 
 
