@@ -58,8 +58,12 @@ def get_userinfo(session: requests.Session):
     return credit
 
 def finish_user_mission(session: requests.Session):
-    resp = session.post("https://yuri.website/wp-json/b2/v1/userMission")
+    resp = session.post("https://yuri.website/wp-json/b2/v1/getTaskData")
     logging.info(resp.text)
+    resp_json = resp.json()
+    if resp_json["task"]["task_mission"]["finish"] != 1:
+        resp = session.post("https://yuri.website/wp-json/b2/v1/userMission")
+        logging.info(resp.text)
 
 def main():
     logging.basicConfig(level=logging.INFO)
