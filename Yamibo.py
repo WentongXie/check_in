@@ -71,10 +71,12 @@ def YamiboSign(session):
     logging.debug(sign_rsp.text)
 
 
-def YamiboCheck(account, password):
+def YamiboCheck(account, password, proxy = None):
     try:
         with requests.Session() as s:
             s.headers.update(header)
+            if proxy:
+                s.proxies.update(proxy)
             uid = YamiboLogin(s, account, password)
             YamiboLogUserInfo(s, uid)
             YamiboSign(s)
