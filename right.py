@@ -36,7 +36,7 @@ def login(user, password):
         data=datas, headers=headers)
     logging.info(r.text)
     if r.text.find("登录失败") != -1 or r.text.find("密码错误") != -1 or r.text.find("错误") != -1:
-        rule = "(?<=\[CDATA\[).*(?=<script)"
+        rule = "(?<=\\[CDATA\\[).*(?=<script)"
         return re.findall(rule, r.text)[0]
     else:
         return requests.utils.dict_from_cookiejar(r.cookies)
