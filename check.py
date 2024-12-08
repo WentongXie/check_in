@@ -15,7 +15,7 @@ def main():
     PushMessageSetConfig("app_token", ["uid"])
     name = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
     LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-    logging.basicConfig(filename = "/root/website/nginx/html/files/log/" + name + ".txt",level = logging.INFO, format = LOG_FORMAT)
+    logging.basicConfig(filename = "/log/" + name + ".txt",level = logging.INFO, format = LOG_FORMAT)
     SonkwoCheck("account", "password")
     YamiboCheck("account", "password")
     GamerCheck("account", "password")
