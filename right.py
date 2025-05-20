@@ -43,8 +43,8 @@ def login(user, password):
 
 
 # 获取现有积分
-def get_coin(cookies):
-    r = requests.get("https://www.right.com.cn/forum/home.php?mod=spacecp&ac=credit&showcredit=1", headers=headers,cookies=cookies)
+def get_coin(cookies, proxy):
+    r = requests.get("https://www.right.com.cn/forum/home.php?mod=spacecp&ac=credit&showcredit=1", headers=headers, cookies=cookies, proxies=proxy)
     logging.debug(r.text)
     rule = "(?<=showmenu\">).*(?=</a>)"
     return re.findall(rule, r.text)[0]
@@ -81,14 +81,14 @@ def put_reply(cookies,tid):
         logging.error("回复帖子失败，原因是："+r.text)
         PushMessage("right sign failed.", r.text)
 
-def right_sign(cookie):
+def right_sign(cookie, proxy):
     try:
         s_cookie = SimpleCookie()
         s_cookie.load(cookie)
         cookies = {k: v.value for k, v in s_cookie.items()}
-        coin = get_coin(cookies)
+        coin = get_coin(cookies, proxy)
         logging.info("目前" + coin)
-        coin = get_coin(cookies)
+        coin = get_coin(cookies, proxy)
         logging.info("目前" + coin)
         '''
         # 执行部分
@@ -109,7 +109,7 @@ def right_sign(cookie):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    right_sign("cookie")
+    right_sign("cookie", "proxy")
     pass
 
 if __name__ == "__main__":
